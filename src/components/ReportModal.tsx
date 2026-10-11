@@ -14,7 +14,7 @@ import {
   FlaskConical,
 } from 'lucide-react';
 import { ChecklistSession } from '../types';
-import { formatHebrewDateTime, formatReportText } from '../utils/storage';
+import { formatHebrewDateTime, formatReportText, isClaudeGenerated } from '../utils/storage';
 
 interface ReportModalProps {
   session: ChecklistSession | null;
@@ -210,7 +210,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 {session.isAiGenerated && (
                   <div className="p-2 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[11px] flex items-center gap-1.5 font-medium">
                     <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                    <span>הצעה אוטומטית – נדרשת בדיקה אנושית (שיקול דעת החוקר בשטח קובע)</span>
+                    <span>{isClaudeGenerated(session) ? 'הצעת AI – נדרשת בדיקה אנושית' : 'הצעה אוטומטית – נדרשת בדיקה אנושית'} (שיקול דעת החוקר בשטח קובע)</span>
                   </div>
                 )}
               </div>

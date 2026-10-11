@@ -3,6 +3,11 @@ import { SEED_SESSIONS } from '../data/presets';
 
 export const STORAGE_KEY = 'scene_checklist_data_v1';
 
+/** True only for checklists Claude actually generated (older AI-flagged sessions have no generatedBy). */
+export function isClaudeGenerated(session: ChecklistSession): boolean {
+  return !!session.isAiGenerated && !!session.generatedBy?.startsWith('claude');
+}
+
 /**
  * Loads all sessions from localStorage under key "scene_checklist_data_v1".
  * On first load, if localStorage is empty, seeds it with 2 sample completed sessions.

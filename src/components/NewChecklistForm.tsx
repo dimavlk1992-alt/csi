@@ -272,7 +272,7 @@ export const NewChecklistForm: React.FC<NewChecklistFormProps> = ({
     const effectiveTitle = selectedSceneType || (freeTextDescription.slice(0, 32) + (freeTextDescription.length > 32 ? '...' : ''));
     const sessionId = `CHK-2026-${String(existingSessions.length + 1).padStart(4, '0')}`;
 
-    // If free-text is entered, build a checklist tailored to the description
+    // If free-text is entered, ask the server for a tailored checklist (Claude, or keyword fallback)
     if (freeTextDescription.trim()) {
       setIsLoadingAi(true);
       try {
@@ -312,13 +312,18 @@ export const NewChecklistForm: React.FC<NewChecklistFormProps> = ({
           sceneDescription: freeTextDescription.trim(),
           createdAt: new Date().toISOString(),
           isCompleted: false,
-          isAiGenerated: false,
+          isAiGenerated: data.isAiGenerated === true,
+          generatedBy: data.isAiGenerated === true ? data.source : undefined,
           items,
         };
 
         setIsLoadingAi(false);
         onChecklistGenerated(newSession);
-        showToast('צ\'קליסט מותאם הופק בהצלחה על פי תיאור הזירה!', 'success');
+        if (newSession.isAiGenerated) {
+          showToast('צ\'קליסט הופק ע"י Claude – נדרשת בדיקה אנושית', 'success');
+        } else {
+          showToast('צ\'קליסט הופק לפי מילות מפתח (מצב גיבוי)', 'info');
+        }
         return;
       } catch (err) {
         console.warn('Server call failed or offline, falling back to smart forensic checklist:', err);
@@ -451,7 +456,7 @@ export const NewChecklistForm: React.FC<NewChecklistFormProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
             </label>
             <span className="text-[11px] text-amber-400/90 font-medium bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
-              התאמה לפי מילות מפתח
+              ניתוח Claude AI
             </span>
           </div>
 
@@ -504,7 +509,7 @@ export const NewChecklistForm: React.FC<NewChecklistFormProps> = ({
             {isLoadingAi ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                <span>מנתח את תיאור הזירה ומפיק שלבים...</span>
+                <span>Claude מנתח את תיאור הזירה ומפיק שלבים... (עד 40 שניות)</span>
               </>
             ) : (
               <>

@@ -25,6 +25,7 @@ export interface ChecklistSession {
   isCompleted: boolean;
   items: ChecklistItem[];
   isAiGenerated?: boolean;
+  generatedBy?: string; // model id when isAiGenerated, e.g. 'claude-sonnet-5-5'
   generalNotes?: string;
 }
 

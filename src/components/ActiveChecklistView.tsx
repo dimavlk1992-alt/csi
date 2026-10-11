@@ -21,7 +21,7 @@ import {
   Package,
 } from 'lucide-react';
 import { ChecklistItem, ChecklistSession } from '../types';
-import { formatHebrewDateTime } from '../utils/storage';
+import { formatHebrewDateTime, isClaudeGenerated } from '../utils/storage';
 
 interface ActiveChecklistViewProps {
   session: ChecklistSession;
@@ -174,7 +174,7 @@ export const ActiveChecklistView: React.FC<ActiveChecklistViewProps> = ({
               {session.isAiGenerated && (
                 <span className="text-xs px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-purple-400" />
-                  מותאם לתיאור
+                  {isClaudeGenerated(session) ? 'נוצר ע"י Claude' : 'מותאם לתיאור'}
                 </span>
               )}
             </div>
@@ -220,13 +220,13 @@ export const ActiveChecklistView: React.FC<ActiveChecklistViewProps> = ({
           )}
         </div>
 
-        {/* Review disclaimer for legacy AI-flagged checklists */}
+        {/* Review disclaimer for generated checklists */}
         {session.isAiGenerated && (
           <div className="mt-3 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-200 text-xs flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
               <span className="font-bold">
-                הצעה אוטומטית – נדרשת בדיקה אנושית
+                {isClaudeGenerated(session) ? 'הצעת AI – נדרשת בדיקה אנושית' : 'הצעה אוטומטית – נדרשת בדיקה אנושית'}
               </span>
             </div>
             <span className="text-[11px] text-amber-400/80 hidden sm:inline">
@@ -335,7 +335,7 @@ export const ActiveChecklistView: React.FC<ActiveChecklistViewProps> = ({
                     {session.isAiGenerated && (
                       <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 flex items-center gap-1">
                         <Sparkles className="w-2.5 h-2.5 text-purple-400" />
-                        הצעה אוטומטית – נדרשת בדיקה אנושית
+                        {isClaudeGenerated(session) ? 'הצעת AI – נדרשת בדיקה אנושית' : 'הצעה אוטומטית – נדרשת בדיקה אנושית'}
                       </span>
                     )}
 
@@ -428,7 +428,7 @@ export const ActiveChecklistView: React.FC<ActiveChecklistViewProps> = ({
                           )}
                         </div>
                         <span className="text-[10px] text-purple-300 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20 font-medium">
-                          הצעה אוטומטית – נדרשת בדיקה אנושית
+                          {isClaudeGenerated(session) ? 'הצעת AI – נדרשת בדיקה אנושית' : 'הצעה אוטומטית – נדרשת בדיקה אנושית'}
                         </span>
                       </div>
 

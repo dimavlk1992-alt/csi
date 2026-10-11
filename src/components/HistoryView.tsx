@@ -17,7 +17,7 @@ import {
   History,
 } from 'lucide-react';
 import { ChecklistSession } from '../types';
-import { formatHebrewDateTime } from '../utils/storage';
+import { formatHebrewDateTime, isClaudeGenerated } from '../utils/storage';
 
 interface HistoryViewProps {
   sessions: ChecklistSession[];
@@ -228,7 +228,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                     {session.isAiGenerated && (
                       <span className="text-xs px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30 font-medium flex items-center gap-1">
                         <Sparkles className="w-3 h-3 text-purple-400" />
-                        מותאם
+                        {isClaudeGenerated(session) ? 'Claude' : 'מותאם'}
                       </span>
                     )}
                   </div>
