@@ -427,9 +427,6 @@ export const ActiveChecklistView: React.FC<ActiveChecklistViewProps> = ({
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] text-purple-300 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20 font-medium">
-                          {isClaudeGenerated(session) ? 'הצעת AI – נדרשת בדיקה אנושית' : 'הצעה אוטומטית – נדרשת בדיקה אנושית'}
-                        </span>
                       </div>
 
                       {item.labAdvice && (

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Anthropic from '@anthropic-ai/sdk';
+import { findDnaAfterChemicalViolation } from './forensicOrder';
 
 dotenv.config({ path: '.env.local' });
 
@@ -243,6 +244,7 @@ const SYSTEM_PROMPT = `אתה קצין מעבדה בכיר ויועץ מעבדו
 7. זירה משולבת: אם התיאור כולל כמה סוגי זירה (למשל הצתת רכב = זירת רכב + זירת הצתה), שלב את השלבים הנדרשים לכל אחד מהם.
 8. category חייב להיות אחת מהקטגוריות: ${CATEGORIES.map((c) => `"${c}"`).join(', ')}.
 9. בין 5 ל-10 שלבים בסך הכול, מותאמים לממצאים שתוארו בפועל. id בפורמט "step-1", "step-2" וכן הלאה.
+10. מסמכים ופתקים – סדר חובה: (א) בדיקה לא הרסנית ב"מעבדת מסמכים והשוואת כתבי יד" (כתב יד, דיו, לחץ כתיבה); (ב) דגימת DNA מגע בסוואב סטרילי ל"מעבדת DNA וביולוגיה"; (ג) רק לאחר מכן פיתוח כימי של טביעות אצבע (נינהידרין) ב"מעבדת פיתוח טביעות אצבע". כל אחד משלושת אלה הוא שלב נפרד, והם חייבים להופיע ברשימה בסדר הזה בדיוק. ב-labAdvice של כל אחד מהם ציין במפורש את הרצף המלא: מסמכים ← DNA ← נינהידרין.
 
 כל הטקסט בעברית ותמציתי: כל שדה משפט אחד או שניים לכל היותר, ממוקד בממצאים שתוארו. החזר את הנוהל אך ורק באמצעות קריאה לכלי submit_checklist.`;
 
@@ -326,6 +328,8 @@ function validateClaudeItems(input: unknown): ChecklistItemDto[] {
   }
 
   if (items[0].category !== 'בידוד ואבטחה') invalid(`first step category is "${items[0].category}", expected scene isolation`);
+  const orderViolation = findDnaAfterChemicalViolation(items);
+  if (orderViolation) invalid(orderViolation);
   return items;
 }
 
